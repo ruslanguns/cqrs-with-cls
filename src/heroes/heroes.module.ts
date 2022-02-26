@@ -1,14 +1,25 @@
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
+import { ClsModule } from 'nestjs-cls';
 import { CommandHandlers } from './commands/handlers';
 import { EventHandlers } from './events/handlers';
 import { HeroesGameController } from './heroes.controller';
 import { QueryHandlers } from './queries/handlers';
 import { HeroRepository } from './repository/hero.repository';
 import { HeroesGameSagas } from './sagas/heroes.sagas';
+import { v4 as uuid } from 'uuid';
+import { StoreAndLogService } from './store-and-log.service';
 
 @Module({
-  imports: [CqrsModule],
+  imports: [
+    CqrsModule,
+    ClsModule.register({
+      middleware: {
+        generateId: true,
+        idGenerator: (req: Request) => uuid(),
+      },
+    }),
+  ],
   controllers: [HeroesGameController],
   providers: [
     HeroRepository,
@@ -16,6 +27,7 @@ import { HeroesGameSagas } from './sagas/heroes.sagas';
     ...EventHandlers,
     ...QueryHandlers,
     HeroesGameSagas,
+    StoreAndLogService,
   ],
 })
 export class HeroesGameModule {}
