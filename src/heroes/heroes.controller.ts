@@ -16,6 +16,7 @@ export class HeroesGameController {
 
   @Post(':id/kill')
   async killDragon(@Param('id') id: string, @Body() dto: KillDragonDto) {
+    this.logger.setData('Hello world!');
     this.logger.log(`Hero ${id} is killing dragon`);
     return this.commandBus.execute(new KillDragonCommand(id, dto.dragonId));
   }
@@ -23,6 +24,7 @@ export class HeroesGameController {
   @Get()
   async findAll(): Promise<Hero[]> {
     this.logger.log(`Hero is getting all heroes`);
+
     return this.queryBus.execute(new GetHeroesQuery());
   }
 }

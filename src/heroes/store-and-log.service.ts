@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ClsService } from 'nestjs-cls';
 import { ClsStore } from 'nestjs-cls/dist/src/lib/cls.interfaces';
 
@@ -7,18 +7,18 @@ interface Storage extends ClsStore {
 }
 
 @Injectable()
-export class StoreAndLogService implements OnModuleInit {
+export class StoreAndLogService {
   constructor(private readonly cls: ClsService<Storage>) {}
-
-  onModuleInit() {
-    this.initialData('Hello World!');
-  }
 
   log(message: string) {
     console.log(`<${this.cls.getId()}> ${message}`);
   }
 
-  initialData(something: string) {
+  setData(something: string) {
     this.cls.set('demoData', something);
+  }
+
+  getData(key: symbol | 'demoData') {
+    return this.cls.get(key);
   }
 }

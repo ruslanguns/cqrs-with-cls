@@ -1,6 +1,6 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
-import { ClsModule } from 'nestjs-cls';
+import { ClsMiddleware, ClsModule } from 'nestjs-cls';
 import { CommandHandlers } from './commands/handlers';
 import { EventHandlers } from './events/handlers';
 import { HeroesGameController } from './heroes.controller';
@@ -30,4 +30,8 @@ import { StoreAndLogService } from './store-and-log.service';
     StoreAndLogService,
   ],
 })
-export class HeroesGameModule {}
+export class HeroesGameModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ClsMiddleware).forRoutes(HeroesGameController);
+  }
+}
